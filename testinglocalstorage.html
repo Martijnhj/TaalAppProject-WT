@@ -1,0 +1,216 @@
+<!--When deleting lesson: a pop up window should follow asking if you are sure. 
+    Because this will also delete any words contained within the lesson-->
+
+<!--When deleting a word a pop up window should follow asking if you're sure-->
+
+
+<html>
+	<head>
+		<style>
+			table, td, th{
+				border: 1px solid black;
+			}
+			table, td, th{
+				margin-left: 20%;
+			}
+			table{
+				border-collapse: collapse;
+			}			
+			.buttonColumn{
+				width:0.75in;
+			}
+			.contentColumn{
+				width: 3in;
+			}
+			.buttonInTable{
+				width:0.75in;
+			}
+			.buttonInTable, .bodyButton{
+				cursor:pointer;
+			}
+			#lijstObject{
+				float: right;
+				width: 90%;
+			}
+			#updateButton{
+				width: 5%;
+				float: left;
+			}
+			#changeOpties {
+				text-align: center;
+			}
+			
+		</style>
+		
+		<script>
+			var deDom = document.getElementsByTagName("html");
+			console.log(deDom);
+            getWoordenlijst();
+            
+            function loadStoredVariable() {
+                document.getElementById("here12").innerHTML = sessionStorage.getItem("selectedLesson");
+            }
+			
+			function getWoordenlijst() {
+				var xhr = new XMLHttpRequest();
+
+				xhr.onreadystatechange = function() {
+					if(this.readyState==4){
+						var woordenArray = JSON.parse(this.responseText);
+						document.getElementById("woordenLijst").innerHTML="";
+						
+						for(var a=0; a<woordenArray.length; a++) {
+								var codeBlock = '<table>'+
+													'<tr>' + 
+														'<td class="contentColumn">' + woordenArray[a].primaryLanguage + '</td>' +
+														'<td class="contentColumn">' + woordenArray[a].targetLanguage + '</td>' +
+														'<td class="buttonColumn"><input type="button" value="delete" onclick="deleteWoord('+woordenArray[a].id+')" class="buttonInTable"></td>' +
+														'<td class="buttonColumn"><input type="button" value="change" onclick="getSpecificWoordForChange('+woordenArray[a].id+')" class="buttonInTable"></td>' +
+													'</tr>' + 
+												'</table>';
+								document.getElementById("woordenLijst").innerHTML += codeBlock;
+						}
+					}
+				}
+				var url = "http://localhost:8082/lesVertalingen" + sessionStorage.getItem("selectedLesson");
+				xhr.open("GET", url , "true");
+				xhr.send();
+			}
+			
+			function addWoord() {
+				var niewWoord = {};
+				niewWoord.primaryLanguage = document.getElementById("woord1").value;
+				niewWoord.targetLanguage = document.getElementById("woordVertaling").value;
+				var nwJSON = JSON.stringify(niewWoord);
+				
+				var xhr = new XMLHttpRequest();
+                
+                var url = "http://localhost:8082/vertalingToevoegen" + sessionStorage.getItem("selectedLesson");
+				xhr.open("POST", url, "true");
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(nwJSON);
+				
+				document.getElementById("woord1").value = "";
+				document.getElementById("woordVertaling").value = "";
+				
+				getWoordenlijst();
+			}
+			
+			function deleteWoord(idVertaling) {
+				console.log(idVertaling);
+				var xhr = new XMLHttpRequest();
+				var url = "http://localhost:8082/deleteVertaling" + sessionStorage.getItem("selectedLesson") + "en" + idVertaling;
+                //var url = "http://localhost:8082/D" + idVertaling
+                xhr.open("DELETE", url, "true");
+				xhr.send();
+						
+				getWoordenlijst();
+			}
+			
+			
+			function getSpecificWoordForChange(idVertaling) {
+				console.log(idVertaling);
+				var xhr = new XMLHttpRequest();
+				var url = "http://localhost:8082/G" + idVertaling;
+				
+				xhr.onreadystatechange = function() {
+					if (this.readyState==4) {
+						var specificWoord = JSON.parse(this.responseText);
+						document.getElementById("woordVerandering").value = specificWoord.primaryLanguage;
+						document.getElementById("vertalingVerandering").value = specificWoord.targetLanguage;
+                        sessionStorage.setItem("changeWoordId", specificWoord.id);
+					}
+				}
+				
+				xhr.open("GET", url, "true");
+				xhr.send();
+			
+			}
+			
+			function updateWoord() {
+				var veranderdWoord = {};
+				veranderdWoord.primaryLanguage = document.getElementById("woordVerandering").value;
+				veranderdWoord.targetLanguage =  document.getElementById("vertalingVerandering").value;
+				var vwJSON = JSON.stringify(veranderdWoord);
+				
+				var xhr = new XMLHttpRequest();
+				var url = "http://localhost:8082/C" + sessionStorage.getItem("changeWoordId");
+                sessionStorage.removeItem("changeWoordId");
+                
+				xhr.open("PUT", url, "true");
+				xhr.setRequestHeader("Content-type", "application/json");
+				xhr.send(vwJSON);
+				
+				document.getElementById("woordVerandering").value="";
+				document.getElementById("vertalingVerandering").value="";
+				document.getElementById("woordId").value="";
+				
+				getWoordenlijst();
+            }
+            
+            function deleteLes() {
+                var xhr = new XMLHttpRequest();
+                alert(sessionStorage.getItem("selectedLesson"))
+                var url = "http://localhost:8082/deleteLesson" + sessionStorage.getItem("selectedLesson");
+
+                
+
+                xhr.open("DELETE", url, "true");
+                xhr.send()
+
+                sessionStorage.removeItem("selectedSession");
+                window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
+            }
+		</script>
+	</head>
+	
+	<body>
+        
+        <div id="here12">
+        </div>
+        <input type="button" value="Update" onclick="loadStoredVariable()">
+
+		<!--<div id="LijstUitkomst"></div>-->
+		
+		<input type="text" placeholder="woord" id="woord1">
+		<input type="text" placeholder="vertaling" id="woordVertaling">
+		<input type="button" class="bodyButton" value="submit" onclick="addWoord()">
+		
+		
+		<hr>
+
+		<table id="updateButton">
+			<input type="button" value="Update Lijst" onclick="getWoordenlijst()">
+		</table>
+		<div id="lijstObject">
+			<table>
+				<tr>
+					<th class="contentColumn">Woord</th>
+					<th class="contentColumn">Vertaling</th>
+					<th class="buttonColumn">Delete</th>
+					<th class="buttonColumn">Change</th>
+				</tr>
+
+			</table>
+			<div id="woordenLijst">
+			</div>
+		</div>
+		
+		
+		
+		<div id="woord12"></div>
+		<div id="changeOpties">
+			<input type="text" id="woordVerandering">
+			<input type="text" id="vertalingVerandering">
+			<input type="hidden" id="woordId">
+			<input type="button" class= "bodyButton" value="Save Change" onclick="updateWoord()">
+		</div>
+    
+        <input type="button" value="Delete Lesson" onclick="deleteLes()">
+		
+
+
+
+		
+	</body>
+</html>

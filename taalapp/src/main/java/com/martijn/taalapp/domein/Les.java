@@ -24,7 +24,10 @@ public class Les {
 
     public void addVertaling(Vertaling vertaling) {
         this.vertaling.add(vertaling);
+    }
 
+    public void removeVertaling(Vertaling vertaling) {
+        this.vertaling.remove(vertaling);
     }
 
     public long getId() {

@@ -12,4 +12,5 @@ public interface VertalingRepository extends CrudRepository<Vertaling, Long> {
 
     //Iterable<Vertaling> findByTargetLanguageContaining(String input);
 
+
 }

@@ -6,55 +6,8 @@
                 cursor: pointer;
             }
         </style>
-        <script>
-            function getLessonList() {
-                var xhr = new XMLHttpRequest;
+        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>>
 
-                xhr.onreadystatechange = function() {
-                    if (this.readyState==4) {
-                        document.getElementById("lessenLijst").innerHTML = "";
-                        var lessonArray = JSON.parse(this.responseText);
-                        for (var a = 0; a<lessonArray.length; a++) {
-                            placeButton(lessonArray[a].id, lessonArray[a].naam);
-                        }
-                    }
-                }
-
-                xhr.open("GET", "http://localhost:8082/lesLijst", "true")
-                xhr.send();
-            }
-
-            function addLesson() {
-                var lesObject = {};
-                lesObject.naam = document.getElementById("lessonToevoegen").value;
-                document.getElementById("lessonToevoegen").value = "";
-                var loJSON = JSON.stringify(lesObject);
-
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST","http://localhost:8082/lesMaken", "true");
-                xhr.setRequestHeader("Content-type", "application/json");
-                xhr.send(loJSON);
-            }
-
-            function placeButton(id, naam) {
-                var lessonButton = document.createElement("button");
-                lessonButton.id = id;
-                lessonButton.innerHTML = naam;
-                lessonButton.onclick = function() {
-                    enterLesson(id);
-                }
-                lessenLijst.appendChild(lessonButton);
-            }
-
-            function enterLesson(id) {
-                window.sessionStorage 
-                sessionStorage.setItem("selectedLesson", id);
-                //alert(sessionStorage.getItem("selectedLesson"));
-                
-                window.open("file:///D:/Spring%20WT/TaalAppProject/testinglocalstorage.html", "_parent")
-            }
-
-        </script>
     </head>
     <body>
         <input type="text" placeholder="Lesson Toevoegen" id="lessonToevoegen">

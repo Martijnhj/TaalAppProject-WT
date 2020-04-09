@@ -73,5 +73,12 @@ public class LesService {
         lr.deleteById(id);
     }
 
+    public void changeNameLes(long id, String newNaam) {
+        lr.findById(id).get().setNaam(newNaam);
+    }
+
+    public Les getSpecificLes(long id) {
+        return lr.findById(id).get();
+    }
 
 }

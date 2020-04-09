@@ -35,6 +35,11 @@ public class LesEndpoint {
         return ls.getLesVertalingenLijst(Long.parseLong(id));
     }
 
+    @GetMapping("/specificLesVars{id}")
+    public Les getspecificLes(@PathVariable String id) {
+        return ls.getSpecificLes(Long.parseLong(id));
+    }
+
     @PostMapping("/lesMaken")
     public void lesMaken(@RequestBody Les les) {
         ls.newLes(les);
@@ -55,6 +60,10 @@ public class LesEndpoint {
         ls.deleteLes(Long.parseLong(id));
     }
 
+    @PutMapping("/changeLessonName{newNaam}in{id}")
+    public void changeLessonName(@PathVariable String id, @PathVariable String newNaam) {
+        ls.changeNameLes(Long.parseLong(id), newNaam);
+    }
 
 
 }

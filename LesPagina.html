@@ -1,12 +1,8 @@
 <html>
     <head>
-        <style>
-            button {
-                width: 1in;
-                cursor: pointer;
-            }
-        </style>
-        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>>
+        <link href="TaalApp.css" rel="stylesheet" type="text/css">	
+        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+        <script> getLessonList(); </script>
 
     </head>
     <body>
@@ -17,8 +13,9 @@
 
         <input type="button" value="Update" onclick="getLessonList()">
 
-        <hr><hr>
+        <hr>
         <div id="lessenLijst"></div>
 
     </body>
+
 </html>

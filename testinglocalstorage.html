@@ -10,15 +10,19 @@
 		<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
 		<link href="TaalApp.css" rel="stylesheet" type="text/css">		
 		<script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+		
+		
+		
 	</head>
 	
 	<body>
-        
-        <div id="here12">
-        </div>
-        <input class = "button" type="button" value="Update" onclick="loadStoredVariable()">
 
-		<!--<div id="LijstUitkomst"></div>-->
+		<input value="back" type="button" onclick="goToLessonPage()"> 
+
+		<div style="cursor:text">
+			<h1 id="lessonName" ondblclick=localChangeLessonNameProgress()></h1>
+		</div>
+        
 		
 		<input type="text" placeholder="woord" id="woord1">
 		<input type="text" placeholder="vertaling" id="woordVertaling">
@@ -26,9 +30,6 @@
 		
 		<hr>
 
-		<table id="updateButton">
-			<input class="button" type="button" value="Update Lijst" onclick="getWoordenlijst()">
-		</table>
 		<div id="lijstObject">
 			<table>
 				<tr>
@@ -43,7 +44,7 @@
 			</div>
 		</div>
 		
-		<!--<div id="woord12"></div>-->
+
 		<div id="changeOpties">
 			<input type="text" id="woordVerandering">
 			<input type="text" id="vertalingVerandering">
@@ -53,8 +54,7 @@
 		<input class="button" type="button" value="Delete Lesson" onclick="openWindow(deleteLes)">
 
 		<div id="changeLessonName">
-			<input type="text" placeholder="New name" id="newNameLesson">
-			<input class="button" type="button" value="Change Lesson Name" onclick="changeLessonName()">
+			<input class="button" type="button" value="Change Lesson Name" onclick="localChangeLessonNameProgress()">
 		</div>
 		
 		<div id="deletePopUp" class="modal" onclick="closeWindow()">
@@ -69,7 +69,51 @@
 		  </div>
 
 
-
-		
+		  
 	</body>
+
+	<script> //specific script methods to this page. Below to allow for loading as page loads
+		getWoordenlijst();
+		assignLessonName();
+		var deDom = document.getElementsByTagName("html")
+		//deDom[0].children[1].children[7].hidden = "true";
+		document.getElementById("changeOpties").style.display = "none";
+
+		async function assignLessonName() {
+			await getSpecificLes();
+			var lesObjectNaam = sessionStorage.getItem("lessonName");
+			sessionStorage.removeItem("lessonName"); 
+			document.getElementById("lessonName").innerHTML = lesObjectNaam;
+		}
+
+		async function localChangeLessonNameProgress() {
+			lessonName.removeChild(lessonName.lastChild);
+			await getSpecificLes();
+			var lesObjectNaam = sessionStorage.getItem("lessonName");
+			sessionStorage.removeItem("lessonName"); 
+			var changeNameInput = document.createElement("input");
+			changeNameInput.type = "text";
+			changeNameInput.value = lesObjectNaam;
+			changeNameInput.onkeyup = function() {
+				localChangeLessonName(event, changeNameInput)
+			}
+			lessonName.appendChild(changeNameInput);
+		}
+
+		function localChangeLessonName(e, inputText) {
+			console.log(e.keyCode);
+			if(e.keyCode==13) {
+				console.log(inputText.value)
+				changeLessonName(inputText.value);//currently hot awaiting this, so might become problem if writing is slow
+				assignLessonName();
+			}
+		}
+
+		function goToLessonPage() {
+			window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
+		}
+
+	</script>
+
+	
 </html>

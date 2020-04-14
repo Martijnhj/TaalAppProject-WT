@@ -18,6 +18,11 @@ public class VertalingService {
     }
 
     public Iterable<Vertaling> vertalingLijst() {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
         return vr.findAll();
     }
 
@@ -26,7 +31,7 @@ public class VertalingService {
     }
 
     public Optional<Vertaling> findWoord(long id) {
-        return vr.findById(id);
+        return vr.findById(id); //add check to make sure it only returns if it is here.
     }
 
     public void updateWoord(long id, Vertaling vertaling) {

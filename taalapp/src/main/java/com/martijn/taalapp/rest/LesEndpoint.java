@@ -26,12 +26,6 @@ public class LesEndpoint {
 
     @GetMapping("/lesVertalingen{id}")
     public Iterable<Vertaling> getLesVertalingenLijst(@PathVariable String id) {
-        try {
-            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
-        } catch (InterruptedException ie) {
-
-        }
-
         return ls.getLesVertalingenLijst(Long.parseLong(id));
     }
 

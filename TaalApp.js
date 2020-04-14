@@ -1,13 +1,11 @@
 var deDom = document.getElementsByTagName("html");
 console.log(deDom);
-getWoordenlijst();
-            
-function loadStoredVariable() {
-    document.getElementById("here12").innerHTML = sessionStorage.getItem("selectedLesson");
-}
 
-//Get woord(en)		
-			
+/*
+	Vertaling woord CRUD
+*/
+
+//GET		
 function getWoordenlijst() {
 	var xhr = new XMLHttpRequest();
 
@@ -38,9 +36,11 @@ function getSpecificWoordForChange(idVertaling) {
 	console.log(idVertaling);
 	var xhr = new XMLHttpRequest();
 	var url = "http://localhost:8082/G" + idVertaling;
+	document.getElementById("changeOpties").style.display = "block";
 				
 	xhr.onreadystatechange = function() {
 		if (this.readyState==4) {
+			
 			var specificWoord = JSON.parse(this.responseText);
 			document.getElementById("woordVerandering").value = specificWoord.primaryLanguage;
 			document.getElementById("vertalingVerandering").value = specificWoord.targetLanguage;
@@ -51,8 +51,7 @@ function getSpecificWoordForChange(idVertaling) {
 	xhr.send();			
 }
 
-//Add woord
-			
+//POST	
 function addWoord() {
 	var niewWoord = {};
 	niewWoord.primaryLanguage = document.getElementById("woord1").value;
@@ -72,8 +71,7 @@ function addWoord() {
 	getWoordenlijst();
 }
 
-//Delete woord
-			
+//DELETE
 function deleteWoord(idVertaling) {
 	console.log(idVertaling);
 	var xhr = new XMLHttpRequest();
@@ -85,8 +83,7 @@ function deleteWoord(idVertaling) {
 	getWoordenlijst();
 }  
 
-//Update woord
-
+//PUT
 function updateWoord() {
 	var veranderdWoord = {};
 	veranderdWoord.primaryLanguage = document.getElementById("woordVerandering").value;
@@ -103,12 +100,17 @@ function updateWoord() {
 				
 	document.getElementById("woordVerandering").value="";
 	document.getElementById("vertalingVerandering").value="";
+	document.getElementById("changeOpties").style.display = "none";
 				
 	getWoordenlijst();
 }
 
-//Get Les(sen)
 
+/*
+	Lesson CRUD
+*/
+
+//GET
 function getLessonList() {
     var xhr = new XMLHttpRequest;
 
@@ -117,7 +119,7 @@ function getLessonList() {
             document.getElementById("lessenLijst").innerHTML = "";
             var lessonArray = JSON.parse(this.responseText);
             for (var a = 0; a<lessonArray.length; a++) {
-                placeButton(lessonArray[a].id, lessonArray[a].naam);
+                placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
             }
         }
     }
@@ -126,8 +128,24 @@ function getLessonList() {
     xhr.send();
 }
 
-//Add les
+function getSpecificLes() {
+	return new Promise(function(resolve,reject) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (this.readyState==4) {
+				var lessonObject = JSON.parse(this.responseText);
+				sessionStorage.setItem("lessonName", lessonObject.naam);
+				resolve();
+			}
+		}
+		var url = "http://localhost:8082/specificLesVars" + sessionStorage.getItem("selectedLesson");
+		xhr.open("GET", url, "true")
+		xhr.send();
+	})
+}
 
+
+//POST
 function addLesson() {
     var lesObject = {};
     lesObject.naam = document.getElementById("lessonToevoegen").value;
@@ -137,14 +155,13 @@ function addLesson() {
     var xhr = new XMLHttpRequest();
     xhr.open("POST","http://localhost:8082/lesMaken", "true");
     xhr.setRequestHeader("Content-type", "application/json");
-    xhr.send(loJSON);
+	xhr.send(loJSON);
+	getLessonList();
 }
 
-//Delete les
-            
+//DELETE     
 function deleteLes() {
     var xhr = new XMLHttpRequest();
-    alert(sessionStorage.getItem("selectedLesson"))
     var url = "http://localhost:8082/deleteLesson" + sessionStorage.getItem("selectedLesson");
 
     xhr.open("DELETE", url, "true");
@@ -154,24 +171,98 @@ function deleteLes() {
     window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
 }
 
-//Update les
-
-function changeLessonName() {
-	var url = "http://localhost:8082/changeLessonName" +document.getElementById("newNameLesson").value+"in"+sessionStorage.getItem("selectedLesson");
-	document.getElementById("newNameLesson").value="";
+//PUT
+function changeLessonName(newValue) {
+	var url = "http://localhost:8082/changeLessonName" +newValue+"in"+sessionStorage.getItem("selectedLesson");
+	console.log(newValue);
 	var xhr = new XMLHttpRequest();
 	xhr.open("PUT", url, "true");
 	xhr.send();
 }
 
-//Button function
+/* 
+	Course CRUD
+*/
 
-function placeButton(id, naam) {
-    var lessonButton = document.createElement("button");
+//GET
+function getCourseList() {
+    var xhr = new XMLHttpRequest;
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState==4) {
+            document.getElementById(".......").innerHTML = "";
+            var lessonArray = JSON.parse(this.responseText);
+            for (var a = 0; a<lessonArray.length; a++) {
+                placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+            }
+        }
+    }
+
+    xhr.open("GET", "http://localhost:8082/..........", "true")
+    xhr.send();
+}
+
+function getSpecificCourse() {
+	return new Promise(function(resolve,reject) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (this.readyState==4) {
+				var lessonObject = JSON.parse(this.responseText);
+				sessionStorage.setItem("courseName", lessonObject.naam);
+				resolve();
+			}
+		}
+		var url = "http://localhost:8082/............." + sessionStorage.getItem("selectedLesson");
+		xhr.open("GET", url, "true")
+		xhr.send();
+	})
+}
+
+
+//POST
+function addCourse() {
+    var courseObject = {};
+    courseObject.naam = document.getElementById("..........").value;
+    document.getElementById("courseToevoegen").value = "";
+    var coJSON = JSON.stringify(lesObject);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST","http://localhost:8082/...........", "true");
+    xhr.setRequestHeader("Content-type", "application/json");
+	xhr.send(coJSON);
+	getLessonList();
+}
+
+//DELETE     
+function deleteCourse() {
+    var xhr = new XMLHttpRequest();
+    var url = "http://localhost:8082/............" + sessionStorage.getItem("selectedLesson");
+
+    xhr.open("DELETE", url, "true");
+    xhr.send()
+
+    sessionStorage.removeItem("selectedSession");
+    window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
+}
+
+//PUT
+function changeCourseName(newValue) {
+	var url = "http://localhost:8082/................." +newValue+"in"+sessionStorage.getItem("selectedLesson");
+	console.log(newValue);
+	var xhr = new XMLHttpRequest();
+	xhr.open("PUT", url, "true");
+	xhr.send();
+}
+
+/*
+	Lesson selection button function
+*/
+function placeLessonSelectButton(id, naam) {
+	var lessonButton = document.createElement("button");
     lessonButton.id = id;
     lessonButton.innerHTML = naam;
     lessonButton.onclick = function() {
-        enterLesson(id);
+		enterLesson(id);
     }
     lessenLijst.appendChild(lessonButton);
 }
@@ -179,13 +270,12 @@ function placeButton(id, naam) {
 function enterLesson(id) {
     window.sessionStorage 
     sessionStorage.setItem("selectedLesson", id);
-    //alert(sessionStorage.getItem("selectedLesson"));
-    
     window.open("file:///D:/Spring%20WT/TaalAppProject/testinglocalstorage.html", "_parent")
 }
 
-//Pop-Up window functions
-
+/*
+	Delete pop-Up window functions
+*/
 function closeWindow() {
 	document.getElementById("deletePopUp").style.display = "none";
 }

@@ -35,6 +35,11 @@ public class LesService {
     }*/
 
     public Iterable<Les> getLesLijst() {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
         return lr.findAll();
     }
 
@@ -43,6 +48,11 @@ public class LesService {
     }
 
     public Iterable<Vertaling> getLesVertalingenLijst(long id) {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
         return lr.findById(id).get().getVertaling();
     }
 
@@ -74,10 +84,15 @@ public class LesService {
     }
 
     public void changeNameLes(long id, String newNaam) {
-        lr.findById(id).get().setNaam(newNaam);
+        lr.findById(id).get().setNaam(newNaam); //add to make sure this only happens when valid id is entered
     }
 
     public Les getSpecificLes(long id) {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
         return lr.findById(id).get();
     }
 

@@ -186,20 +186,20 @@ function changeLessonName(newValue) {
 
 //GET
 function getCourseList() {
-    var xhr = new XMLHttpRequest;
-
-    xhr.onreadystatechange = function() {
-        if (this.readyState==4) {
-            document.getElementById(".......").innerHTML = "";
-            var lessonArray = JSON.parse(this.responseText);
-            for (var a = 0; a<lessonArray.length; a++) {
-                placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
-            }
-        }
-    }
-
-    xhr.open("GET", "http://localhost:8082/..........", "true")
-    xhr.send();
+		var xhr = new XMLHttpRequest;
+		xhr.onreadystatechange = function() {
+			if (this.readyState==4) {
+				document.getElementById("courseListBlock").innerHTML = "";
+				var lessonArray = JSON.parse(this.responseText);
+				for (var a = 0; a<lessonArray.length; a++) {
+					document.getElementById("courseListBlock").innerHTML += lessonArray[a].naam + "<br>";
+					//placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+				}
+				resolve();
+			}
+		}
+		xhr.open("GET", "http://localhost:8082/courseLijst", "true")
+		xhr.send();
 }
 
 function getSpecificCourse() {
@@ -221,16 +221,21 @@ function getSpecificCourse() {
 
 //POST
 function addCourse() {
-    var courseObject = {};
-    courseObject.naam = document.getElementById("..........").value;
-    document.getElementById("courseToevoegen").value = "";
-    var coJSON = JSON.stringify(lesObject);
+	return new Promise(function(resolve,reject){
+		var courseObject = {};
+		courseObject.naam = document.getElementById("newCourseName").value;
+		document.getElementById("newCourseName").value = "";
+		var coJSON = JSON.stringify(courseObject);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST","http://localhost:8082/...........", "true");
-    xhr.setRequestHeader("Content-type", "application/json");
-	xhr.send(coJSON);
-	getLessonList();
+		var xhr = new XMLHttpRequest();
+		xhr.open("POST","http://localhost:8082/courseMaken", "true");
+		xhr.setRequestHeader("Content-type", "application/json");
+		xhr.send(coJSON);
+		getCourseList();
+		resolve();
+	})
+	//still needs to build in a way to wait for this function to finish.
+	//It can't await gercourse list because this finishes fine. It is server side ms delay before the addition/change is saved.
 }
 
 //DELETE     

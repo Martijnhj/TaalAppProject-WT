@@ -13,6 +13,8 @@ public class VertalingService {
     @Autowired
     VertalingRepository vr;
 
+    //=> CURRENTLY NOTHING USED BECAUSE ALL DEALT IN LESSERVICE
+
     public void addVertaling(Vertaling vertaling) {
         vr.save(vertaling);
     }

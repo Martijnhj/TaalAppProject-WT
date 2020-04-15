@@ -2,10 +2,11 @@
     <head>
         <link href="TaalApp.css" rel="stylesheet" type="text/css">	
         <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
-        <script> getLessonList(); </script>
+      
 
     </head>
     <body>
+        <!--Need a back button here still-->
         <input type="text" placeholder="Lesson Toevoegen" id="lessonToevoegen">
         <input type="button" value="Toevoegen" onclick="addLesson()"> 
 
@@ -15,7 +16,27 @@
 
         <hr>
         <div id="lessenLijst"></div>
+        <hr>
+        <input type="button" value="Delete Course" onclick="openWindow(deleteCourse)" class="button">
+
+        <div id="deletePopUp" class="modal" onclick="closeWindow()">
+			<!-- Modal content -->
+			<div id="deletePopUpContent" class="modal-content">
+			  <!--<span class="close" onclick="closeWindow()">&times;</span>-->
+			  <p>Some text in the Modal..</p>
+			  <input type="button" value="cancel" onclick="closeWindow()">
+			</div>
+        </div>
+        
 
     </body>
+    <script> 
+        getLessonList() 
+        //hier gaat call komen voor verandering van shit. Moet meer generiek gemaakt worden vanuit testinglocalstorage.html!!!!
+    
+    
+    
+    </script>
+    
 
 </html>

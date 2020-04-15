@@ -43,4 +43,8 @@ public class Course {
         this.lessen.add(les);
     }
 
+    public void removeLessen(Les les) {
+        this.lessen.remove(les);
+    }
+
 }

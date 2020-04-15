@@ -2,11 +2,9 @@ package com.martijn.taalapp.rest;
 
 import com.martijn.taalapp.controller.CourseService;
 import com.martijn.taalapp.domein.Course;
+import com.martijn.taalapp.domein.Les;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CourseEndpoint {
@@ -18,8 +16,28 @@ public class CourseEndpoint {
         return cs.getCourseList();
     }
 
+    @GetMapping("courseLessenLijst{id}")
+    public Iterable<Les> getCourseLessenLijst(@PathVariable String id) {
+        return cs.getCourseLessenLijst(Long.parseLong(id));
+    }
+
     @PostMapping("/courseMaken")
     public void addCourse(@RequestBody Course course) {
         cs.newCourse(course);
+    }
+
+    @PostMapping("/lesToevoegen{id}")
+    public void addLesson(@PathVariable String id, @RequestBody Les les) {
+        cs.addLessonToCourse(Long.parseLong(id), les);
+    }
+
+    @DeleteMapping("/deleteCourse{id}")
+    public void deleteCourse(@PathVariable String id) {
+        cs.deleteCourse(Long.parseLong(id));
+    }
+
+    @DeleteMapping("/deleteLes{idLes}binnen{idCourse}")
+    public void deleteLessonFromCourse(@PathVariable String idLes, @PathVariable String idCourse) {
+        cs.deleteLesFromCourse(Long.parseLong(idCourse), Long.parseLong(idLes));
     }
 }

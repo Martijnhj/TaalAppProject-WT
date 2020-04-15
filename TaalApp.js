@@ -113,18 +113,17 @@ function updateWoord() {
 //GET
 function getLessonList() {
     var xhr = new XMLHttpRequest;
-
     xhr.onreadystatechange = function() {
         if (this.readyState==4) {
-            document.getElementById("lessenLijst").innerHTML = "";
+			document.getElementById("lessenLijst").innerHTML = "";
             var lessonArray = JSON.parse(this.responseText);
             for (var a = 0; a<lessonArray.length; a++) {
                 placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
             }
         }
     }
-
-    xhr.open("GET", "http://localhost:8082/lesLijst", "true")
+	var url = "http://localhost:8082/courseLessenLijst" + sessionStorage.getItem("selectedCourse");
+    xhr.open("GET", url, "true")
     xhr.send();
 }
 
@@ -152,8 +151,9 @@ function addLesson() {
     document.getElementById("lessonToevoegen").value = "";
     var loJSON = JSON.stringify(lesObject);
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST","http://localhost:8082/lesMaken", "true");
+	var xhr = new XMLHttpRequest();
+	var url = "http://localhost:8082/lesToevoegen" + sessionStorage.getItem("selectedCourse");
+    xhr.open("POST", url, "true");
     xhr.setRequestHeader("Content-type", "application/json");
 	xhr.send(loJSON);
 	getLessonList();
@@ -162,7 +162,7 @@ function addLesson() {
 //DELETE     
 function deleteLes() {
     var xhr = new XMLHttpRequest();
-    var url = "http://localhost:8082/deleteLesson" + sessionStorage.getItem("selectedLesson");
+    var url = "http://localhost:8082/deleteLes" + sessionStorage.getItem("selectedLesson") + "binnen" + sessionStorage.getItem("selectedCourse");
 
     xhr.open("DELETE", url, "true");
     xhr.send()
@@ -192,10 +192,8 @@ function getCourseList() {
 				document.getElementById("courseListBlock").innerHTML = "";
 				var lessonArray = JSON.parse(this.responseText);
 				for (var a = 0; a<lessonArray.length; a++) {
-					document.getElementById("courseListBlock").innerHTML += lessonArray[a].naam + "<br>";
-					//placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+					placeCourseSelectButton(lessonArray[a].id, lessonArray[a].naam);
 				}
-				resolve();
 			}
 		}
 		xhr.open("GET", "http://localhost:8082/courseLijst", "true")
@@ -212,7 +210,7 @@ function getSpecificCourse() {
 				resolve();
 			}
 		}
-		var url = "http://localhost:8082/............." + sessionStorage.getItem("selectedLesson");
+		var url = "http://localhost:8082/............." + sessionStorage.getItem("selectedCourse");
 		xhr.open("GET", url, "true")
 		xhr.send();
 	})
@@ -241,7 +239,7 @@ function addCourse() {
 //DELETE     
 function deleteCourse() {
     var xhr = new XMLHttpRequest();
-    var url = "http://localhost:8082/............" + sessionStorage.getItem("selectedLesson");
+    var url = "http://localhost:8082/deleteCourse" + sessionStorage.getItem("selectedCourse");
 
     xhr.open("DELETE", url, "true");
     xhr.send()
@@ -260,22 +258,28 @@ function changeCourseName(newValue) {
 }
 
 /*
-	Lesson selection button function
+	Lesson, Course selection button function
 */
 function placeLessonSelectButton(id, naam) {
 	var lessonButton = document.createElement("button");
     lessonButton.id = id;
     lessonButton.innerHTML = naam;
     lessonButton.onclick = function() {
-		enterLesson(id);
+		sessionStorage.setItem("selectedLesson", id);
+    	window.open("file:///D:/Spring%20WT/TaalAppProject/testinglocalstorage.html", "_parent")
     }
     lessenLijst.appendChild(lessonButton);
 }
 
-function enterLesson(id) {
-    window.sessionStorage 
-    sessionStorage.setItem("selectedLesson", id);
-    window.open("file:///D:/Spring%20WT/TaalAppProject/testinglocalstorage.html", "_parent")
+function placeCourseSelectButton(id, naam) {
+	var lessonButton = document.createElement("button");
+	lessonButton.id = id;
+	lessonButton.innerHTML = naam;
+	lessonButton.onclick = function(){
+		sessionStorage.setItem("selectedCourse", id);
+		window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
+	}
+	courseListBlock.appendChild(lessonButton);
 }
 
 /*

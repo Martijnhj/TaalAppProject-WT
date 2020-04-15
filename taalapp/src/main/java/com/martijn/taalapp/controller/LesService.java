@@ -88,11 +88,6 @@ public class LesService {
     }
 
     public Les getSpecificLes(long id) {
-        try {
-            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
-        } catch (InterruptedException ie) {
-
-        }
         return lr.findById(id).get();
     }
 

@@ -30,7 +30,7 @@ public class LesEndpoint {
     }
 
     @GetMapping("/specificLesVars{id}")
-    public Les getspecificLes(@PathVariable String id) {
+    public Les getSpecificLes(@PathVariable String id) {
         return ls.getSpecificLes(Long.parseLong(id));
     }
 

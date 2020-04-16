@@ -2,9 +2,10 @@
     <head>
         <link href="TaalApp.css" rel="stylesheet" type="text/css">		
         <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
-        <script>getCourseList();</script>
+
     </head>
     <body>
+        <input class="button" type="button" value="Back" onclick="goToTaalPage()">
         <div id="addCourseBlock">
             <input id="newCourseName" type="text" placeholder="Add Course Block">
             <input id="addNewCourseName" type="button" value="Add Course" onclick="addCourse()">
@@ -16,4 +17,11 @@
 
         </div>
     </body>
+    <script>
+        getCourseList();
+    
+        function goToTaalPage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/TaalPagina.html", "_parent")
+        }
+    </script>
 </html>

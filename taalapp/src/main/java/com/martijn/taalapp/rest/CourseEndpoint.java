@@ -16,9 +16,14 @@ public class CourseEndpoint {
         return cs.getCourseList();
     }
 
-    @GetMapping("courseLessenLijst{id}")
+    @GetMapping("/courseLessenLijst{id}")
     public Iterable<Les> getCourseLessenLijst(@PathVariable String id) {
         return cs.getCourseLessenLijst(Long.parseLong(id));
+    }
+
+    @GetMapping("/specificCourseVars{id}")
+    public Course getSpecificCourse(@PathVariable String id) {
+        return cs.getSpecificCourse(Long.parseLong(id));
     }
 
     @PostMapping("/courseMaken")
@@ -40,4 +45,11 @@ public class CourseEndpoint {
     public void deleteLessonFromCourse(@PathVariable String idLes, @PathVariable String idCourse) {
         cs.deleteLesFromCourse(Long.parseLong(idCourse), Long.parseLong(idLes));
     }
+
+    @PutMapping("/changeCourseName{newNaam}in{id}")
+    public void changeCourseName(@PathVariable String id, @PathVariable String newNaam){
+        cs.changeNameCourse(Long.parseLong(id), newNaam);
+    }
+
+
 }

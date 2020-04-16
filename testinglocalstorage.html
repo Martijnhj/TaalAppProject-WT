@@ -17,7 +17,7 @@
 	
 	<body>
 
-		<input value="back" type="button" onclick="goToLessonPage()"> 
+		<input value="Back" type="button" onclick="goToLessonPage()"> 
 
 		<div style="cursor:text">
 			<h1 id="lessonName" ondblclick=localChangeLessonNameProgress()></h1>
@@ -75,25 +75,21 @@
 	<script> //specific script methods to this page. Below to allow for loading as page loads
 		getWoordenlijst();
 		assignLessonName();
-		var deDom = document.getElementsByTagName("html")
-		//deDom[0].children[1].children[7].hidden = "true";
 		document.getElementById("changeOpties").style.display = "none";
 
 		async function assignLessonName() {
 			await getSpecificLes();
-			var lesObjectNaam = sessionStorage.getItem("lessonName");
-			sessionStorage.removeItem("lessonName"); 
-			document.getElementById("lessonName").innerHTML = lesObjectNaam;
+			document.getElementById("lessonName").innerHTML = sessionStorage.getItem("courseName") + ">" + sessionStorage.getItem("lessonName");
+			//sessionStorage.removeItem("lessonName"); 
 		}
 
 		async function localChangeLessonNameProgress() {
 			lessonName.removeChild(lessonName.lastChild);
 			await getSpecificLes();
-			var lesObjectNaam = sessionStorage.getItem("lessonName");
-			sessionStorage.removeItem("lessonName"); 
 			var changeNameInput = document.createElement("input");
 			changeNameInput.type = "text";
-			changeNameInput.value = lesObjectNaam;
+			changeNameInput.value = sessionStorage.getItem("lessonName");
+			//sessionStorage.removeItem("lessonName"); 
 			changeNameInput.onkeyup = function() {
 				localChangeLessonName(event, changeNameInput)
 			}

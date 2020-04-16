@@ -27,6 +27,24 @@ public class CourseService {
         return cr.findAll();
     }
 
+    public Iterable<Les> getCourseLessenLijst(long id) {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
+        return cr.findById(id).get().getLessen();
+    }
+
+    public Course getSpecificCourse(long id) {
+        try {
+            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
+        } catch (InterruptedException ie) {
+
+        }
+        return cr.findById(id).get();
+    }
+
     public void newCourse(Course course) {
         cr.save(course);
     }
@@ -35,15 +53,6 @@ public class CourseService {
         lr.save(les);
         cr.findById(idCourse).get().addLessen(les);
         cr.save(cr.findById(idCourse).get());
-    }
-
-    public Iterable<Les> getCourseLessenLijst(long id) {
-        try {
-            Thread.sleep(100); //wait for changes to be updated in the database. Better solution than initial delete idea
-        } catch (InterruptedException ie) {
-
-        }
-        return cr.findById(id).get().getLessen();
     }
 
     public void deleteCourse(long id) {
@@ -65,6 +74,10 @@ public class CourseService {
     public void deleteLesFromCourse(long idCourse, long idLes) {
         cr.findById(idCourse).get().removeLessen(lr.findById(idLes).get());
         ls.deleteLes(idLes);
+    }
+
+    public void changeNameCourse(long idCourse, String newName) {
+        cr.findById(idCourse).get().setNaam(newName);
     }
 
 

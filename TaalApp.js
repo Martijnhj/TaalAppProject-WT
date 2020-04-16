@@ -165,9 +165,9 @@ function deleteLes() {
     var url = "http://localhost:8082/deleteLes" + sessionStorage.getItem("selectedLesson") + "binnen" + sessionStorage.getItem("selectedCourse");
 
     xhr.open("DELETE", url, "true");
-    xhr.send()
-
-    sessionStorage.removeItem("selectedSession");
+	xhr.send()
+	
+    sessionStorage.removeItem("selectedLesson");
     window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
 }
 
@@ -190,13 +190,14 @@ function getCourseList() {
 		xhr.onreadystatechange = function() {
 			if (this.readyState==4) {
 				document.getElementById("courseListBlock").innerHTML = "";
-				var lessonArray = JSON.parse(this.responseText);
-				for (var a = 0; a<lessonArray.length; a++) {
-					placeCourseSelectButton(lessonArray[a].id, lessonArray[a].naam);
+				var courseArray = JSON.parse(this.responseText);
+				for (var a = 0; a<courseArray.length; a++) {
+					placeCourseSelectButton(courseArray[a].id, courseArray[a].naam);
 				}
 			}
 		}
-		xhr.open("GET", "http://localhost:8082/courseLijst", "true")
+		var url="http://localhost:8082/taalCoursesLijst" + sessionStorage.getItem("selectedTaal")
+		xhr.open("GET", url, "true")
 		xhr.send();
 }
 
@@ -205,12 +206,12 @@ function getSpecificCourse() {
 		var xhr = new XMLHttpRequest();
 		xhr.onreadystatechange = function() {
 			if (this.readyState==4) {
-				var lessonObject = JSON.parse(this.responseText);
-				sessionStorage.setItem("courseName", lessonObject.naam);
+				var courseObject = JSON.parse(this.responseText);
+				sessionStorage.setItem("courseName", courseObject.naam);
 				resolve();
 			}
 		}
-		var url = "http://localhost:8082/............." + sessionStorage.getItem("selectedCourse");
+		var url = "http://localhost:8082/specificCourseVars" + sessionStorage.getItem("selectedCourse");
 		xhr.open("GET", url, "true")
 		xhr.send();
 	})
@@ -226,7 +227,8 @@ function addCourse() {
 		var coJSON = JSON.stringify(courseObject);
 
 		var xhr = new XMLHttpRequest();
-		xhr.open("POST","http://localhost:8082/courseMaken", "true");
+		var url = "http://localhost:8082/courseToevoegen" + sessionStorage.getItem("selectedTaal")
+		xhr.open("POST", url, "true");
 		xhr.setRequestHeader("Content-type", "application/json");
 		xhr.send(coJSON);
 		getCourseList();
@@ -244,18 +246,66 @@ function deleteCourse() {
     xhr.open("DELETE", url, "true");
     xhr.send()
 
-    sessionStorage.removeItem("selectedSession");
+    sessionStorage.removeItem("selectedCourse");
     window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
 }
 
 //PUT
 function changeCourseName(newValue) {
-	var url = "http://localhost:8082/................." +newValue+"in"+sessionStorage.getItem("selectedLesson");
+	var url = "http://localhost:8082/changeCourseName" +newValue+"in"+sessionStorage.getItem("selectedCourse");
 	console.log(newValue);
 	var xhr = new XMLHttpRequest();
 	xhr.open("PUT", url, "true");
 	xhr.send();
 }
+
+/*
+	Taal CRUD
+*/
+
+//GET
+function getTaalList() {
+	var xhr = new XMLHttpRequest;
+	xhr.onreadystatechange = function() {
+		if (this.readyState==4) {
+			document.getElementById("taalSelectBlock").innerHTML = "";
+			var taalArray = JSON.parse(this.responseText);
+			for (var a = 0; a<taalArray.length; a++) {
+				placeTaalSelectButton(taalArray[a].id, taalArray[a].naam);
+			}
+		}
+	}
+	xhr.open("GET", "http://localhost:8082/taalLijst", "true")
+	xhr.send();
+}
+
+//POST
+function addTaal() {
+    var taalObject = {};
+    taalObject.naam = document.getElementById("taalToevoegen").value;
+    document.getElementById("taalToevoegen").value = "";
+    var toJSON = JSON.stringify(taalObject);
+
+	var xhr = new XMLHttpRequest();
+	var url = "http://localhost:8082/taalMaken";
+    xhr.open("POST", url, "true");
+    xhr.setRequestHeader("Content-type", "application/json");
+	xhr.send(toJSON);
+	getTaalList();
+}
+
+//DELETE     
+function deleteTaal() {
+    var xhr = new XMLHttpRequest();
+    var url = "http://localhost:8082/deleteTaal" + sessionStorage.getItem("selectedTaal");
+
+    xhr.open("DELETE", url, "true");
+    xhr.send()
+
+    sessionStorage.removeItem("selectedSession");
+    window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
+}
+
 
 /*
 	Lesson, Course selection button function
@@ -272,15 +322,27 @@ function placeLessonSelectButton(id, naam) {
 }
 
 function placeCourseSelectButton(id, naam) {
-	var lessonButton = document.createElement("button");
-	lessonButton.id = id;
-	lessonButton.innerHTML = naam;
-	lessonButton.onclick = function(){
+	var courseButton = document.createElement("button");
+	courseButton.id = id;
+	courseButton.innerHTML = naam;
+	courseButton.onclick = function(){
 		sessionStorage.setItem("selectedCourse", id);
 		window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
 	}
-	courseListBlock.appendChild(lessonButton);
+	courseListBlock.appendChild(courseButton);
 }
+
+function placeTaalSelectButton(id, naam) {
+	var taalButton = document.createElement("button");
+	taalButton.id = id;
+	taalButton.innerHTML = naam;
+	taalButton.onclick = function(){
+		sessionStorage.setItem("selectedTaal", id);
+		window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
+	}
+	taalSelectBlock.appendChild(taalButton);
+}
+
 
 /*
 	Delete pop-Up window functions

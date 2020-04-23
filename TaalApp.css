@@ -3,6 +3,7 @@ table, td, th{
 }
 table, td, th{
     margin-left: 20%;
+    /* save as block of text. then push to center with text-align center within parent */
 }
 table{
     border-collapse: collapse;

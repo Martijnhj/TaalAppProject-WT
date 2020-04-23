@@ -41,7 +41,7 @@
 	
 		async function assignCourseName() {
 			await getSpecificCourse();
-            document.getElementById("courseName").innerHTML = sessionStorage.getItem("courseName");
+            document.getElementById("courseName").innerHTML = sessionStorage.getItem("taalName") + ">" + sessionStorage.getItem("courseName");
             //sessionStorage.removeItem("courseName");
             //moet hier links komen naar de pagina waar naar verwezen wordt 
 		}

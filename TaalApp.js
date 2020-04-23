@@ -7,29 +7,38 @@ console.log(deDom);
 
 //GET		
 function getWoordenlijst() {
+	return new Promise(function(resolve,reject){
 	var xhr = new XMLHttpRequest();
 
 	xhr.onreadystatechange = function() {
 		if(this.readyState==4){
 			var woordenArray = JSON.parse(this.responseText);
-			document.getElementById("woordenLijst").innerHTML="";
-						
-			for(var a=0; a<woordenArray.length; a++) {
-				var codeBlock = '<table>'+
-									'<tr>' + 
-										'<td class="contentColumn">' + woordenArray[a].primaryLanguage + '</td>' +
-										'<td class="contentColumn">' + woordenArray[a].targetLanguage + '</td>' +
-										'<td class="buttonColumn"><input type="button" value="delete" onclick="openWindow(deleteWoord,'+woordenArray[a].id+')" class="buttonInTable"></td>' +
-										'<td class="buttonColumn"><input type="button" value="change" onclick="getSpecificWoordForChange('+woordenArray[a].id+')" class="buttonInTable"></td>' +
-	            					'</tr>' + 
-								'</table>';
-				document.getElementById("woordenLijst").innerHTML += codeBlock;
-			}
+			console.log(woordenArray[0].primaryLanguage)
+			resolve(woordenArray);
 		}
 	}
 	var url = "http://localhost:8082/lesVertalingen" + sessionStorage.getItem("selectedLesson");
 	xhr.open("GET", url , "true");
-    xhr.send();
+	xhr.send();
+	})
+}
+
+async function getWoordenlijstMakeUp() {
+	var woordenArray = await getWoordenlijst();
+	//console.log(woordenArray[0].primaryLanguage);
+	document.getElementById("woordenLijst").innerHTML="";
+						
+	for(var a=0; a<woordenArray.length; a++) {
+		var codeBlock = '<table>'+
+							'<tr>' + 
+								'<td class="contentColumn">' + woordenArray[a].primaryLanguage + '</td>' +
+								'<td class="contentColumn">' + woordenArray[a].targetLanguage + '</td>' +
+								'<td class="buttonColumn"><input type="button" value="delete" onclick="openWindow(deleteWoord,'+woordenArray[a].id+')" class="buttonInTable"></td>' +
+								'<td class="buttonColumn"><input type="button" value="change" onclick="getSpecificWoordForChange('+woordenArray[a].id+')" class="buttonInTable"></td>' +
+							'</tr>' + 
+						'</table>';
+		document.getElementById("woordenLijst").innerHTML += codeBlock;
+	}
 }
 
 function getSpecificWoordForChange(idVertaling) {
@@ -68,7 +77,7 @@ function addWoord() {
 	document.getElementById("woord1").value = "";
 	document.getElementById("woordVertaling").value = "";
 				
-	getWoordenlijst();
+	getWoordenlijstMakeUp();
 }
 
 //DELETE
@@ -80,7 +89,7 @@ function deleteWoord(idVertaling) {
     xhr.open("DELETE", url, "true");
 	xhr.send();
 						
-	getWoordenlijst();
+	getWoordenlijstMakeUp();
 }  
 
 //PUT
@@ -102,7 +111,7 @@ function updateWoord() {
 	document.getElementById("vertalingVerandering").value="";
 	document.getElementById("changeOpties").style.display = "none";
 				
-	getWoordenlijst();
+	getWoordenlijstMakeUp();
 }
 
 
@@ -118,8 +127,8 @@ function getLessonList() {
 			document.getElementById("lessenLijst").innerHTML = "";
             var lessonArray = JSON.parse(this.responseText);
             for (var a = 0; a<lessonArray.length; a++) {
-                placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
-            }
+				placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+			}
         }
     }
 	var url = "http://localhost:8082/courseLessenLijst" + sessionStorage.getItem("selectedCourse");
@@ -279,6 +288,22 @@ function getTaalList() {
 	xhr.send();
 }
 
+function getSpecificTaal() {
+	return new Promise(function(resolve,reject) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (this.readyState==4) {
+				var taalObject = JSON.parse(this.responseText);
+				sessionStorage.setItem("taalName", taalObject.naam);
+				resolve();
+			}
+		}
+		var url = "http://localhost:8082/specificTaalVars" + sessionStorage.getItem("selectedTaal");
+		xhr.open("GET", url, "true")
+		xhr.send();
+	})
+}
+
 //POST
 function addTaal() {
     var taalObject = {};
@@ -302,8 +327,18 @@ function deleteTaal() {
     xhr.open("DELETE", url, "true");
     xhr.send()
 
-    sessionStorage.removeItem("selectedSession");
-    window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
+	sessionStorage.removeItem("selectedSession");
+	
+    window.open("file:///D:/Spring%20WT/TaalAppProject/TaalPagina.html", "_parent")
+}
+
+//PUT
+function changeTaalName(newValue) {
+	var url = "http://localhost:8082/changeTaalName" +newValue+"in"+sessionStorage.getItem("selectedTaal");
+	console.log(newValue);
+	var xhr = new XMLHttpRequest();
+	xhr.open("PUT", url, "true");
+	xhr.send();
 }
 
 
@@ -355,18 +390,18 @@ function confirmDeletion(id, deleteFunction) {
 	document.getElementById("confirm").onclick = deleteFunction(id);
 }
 			
-function openWindow(deleteFunction, id) {
-	placePopUpButton(deleteFunction, id);
+function openWindow(deleteFunction) {
+	placePopUpButton(deleteFunction);
 	document.getElementById("deletePopUp").style.display = "block";
 }
 
-function placePopUpButton(deleteFunction, id) {
+function placePopUpButton(deleteFunction) {
 	deletePopUpContent.removeChild(deletePopUpContent.lastChild) //delete previous created button
     var lessonButton = document.createElement("button");
     lessonButton.innerHTML = "confirm";
 	lessonButton.id = "confirm"
     lessonButton.onclick = function() {
-        deleteFunction(id);
+        deleteFunction();
 	    closeWindow();
     }
     deletePopUpContent.appendChild(lessonButton);

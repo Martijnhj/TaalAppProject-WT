@@ -56,6 +56,8 @@
 		<div id="changeLessonName">
 			<input class="button" type="button" value="Change Lesson Name" onclick="localChangeLessonNameProgress()">
 		</div>
+
+		<input type="button" class="button" value="Practice Lesson" onclick="goToLessonPracticeSession()">
 		
 		<div id="deletePopUp" class="modal" onclick="closeWindow()">
 
@@ -73,13 +75,13 @@
 	</body>
 
 	<script> //specific script methods to this page. Below to allow for loading as page loads
-		getWoordenlijst();
+		getWoordenlijstMakeUp();
 		assignLessonName();
 		document.getElementById("changeOpties").style.display = "none";
 
 		async function assignLessonName() {
 			await getSpecificLes();
-			document.getElementById("lessonName").innerHTML = sessionStorage.getItem("courseName") + ">" + sessionStorage.getItem("lessonName");
+			document.getElementById("lessonName").innerHTML = sessionStorage.getItem("taalName") + ">" + sessionStorage.getItem("courseName") + ">" + sessionStorage.getItem("lessonName");
 			//sessionStorage.removeItem("lessonName"); 
 		}
 
@@ -107,6 +109,10 @@
 
 		function goToLessonPage() {
 			window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
+		}
+
+		function goToLessonPracticeSession() {
+			window.open("file:///D:/Spring%20WT/TaalAppProject/LessonLearning.html", "_parent")
 		}
 
 	</script>

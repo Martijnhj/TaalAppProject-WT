@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <link href="TaalApp.css" rel="stylesheet" type="text/css">		
+		<script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+        <script>
+            sessionStorage.setItem("testLocation", 0); //nu nog elke keer als reset reset de test
+            leerLijst();
+            leerLijstOefenen(sessionStorage.getItem("testLocation"));
+
+            async function leerLijst() {
+                var woordenArray = await getWoordenlijst();
+                for(var a=0;a<woordenArray.length & a<5;a++) {
+                    document.getElementById("SelectedWords").innerHTML += woordenArray[a].primaryLanguage + "&nbsp;".repeat(16) + woordenArray[a].targetLanguage + "<br>";
+                }
+            }
+
+            async function leerLijstOefenen(a) {
+                var woordenArray = await getWoordenlijst();
+                if(a<woordenArray.length && a<5) {
+                    document.getElementById("beginWoord").innerHTML = woordenArray[a].primaryLanguage;
+                    document.getElementById("vertaling").innerHTML = woordenArray[a].targetLanguage;
+                } else {
+                    document.getElementById("beginWoord").innerHTML = "Done";
+                }
+                document.getElementById("vertaling").style.display= "none";
+                document.getElementById("checkingButtons").style.display= "none";
+            }
+
+            function showTranslation() {
+                document.getElementById("vertaling").style.display= "block";
+                document.getElementById("checkingButtons").style.display= "block";
+
+            }
+
+            function goedVertaald() {
+                var nextLocation = parseInt(sessionStorage.getItem("testLocation")) + 1;
+                sessionStorage.setItem("testLocation", (nextLocation));
+                
+                console.log(nextLocation);
+                console.log(sessionStorage.getItem("testLocation"));
+                leerLijstOefenen(sessionStorage.getItem("testLocation"));
+            }
+
+
+            function goToLessonWoordenPage() {
+                window.open("file:///D:/Spring%20WT/TaalAppProject/testinglocalstorage.html", "_parent");
+            }
+
+        </script>
+    
+    </head>
+    <body>
+        <input type="button" class="button" value="Back" onclick="goToLessonWoordenPage()">
+        <div id="SelectedWords">
+        
+        </div>
+
+        <hr>
+
+        <div id="beginWoord">
+
+        </div>
+        <hr>
+        <div id="vertaling">
+
+        </div>
+        
+        <input class="button" type="button" value="See Translation" onclick="showTranslation()">
+        
+        <div id="checkingButtons">
+            <input class="button" type="button" value="Next" onclick="goedVertaald()">
+        </div>
+    </body>
+</html>

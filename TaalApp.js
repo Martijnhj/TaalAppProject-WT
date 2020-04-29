@@ -13,7 +13,6 @@ function getWoordenlijst() {
 	xhr.onreadystatechange = function() {
 		if(this.readyState==4){
 			var woordenArray = JSON.parse(this.responseText);
-			console.log(woordenArray[0].primaryLanguage)
 			resolve(woordenArray);
 		}
 	}
@@ -21,6 +20,38 @@ function getWoordenlijst() {
 	xhr.open("GET", url , "true");
 	xhr.send();
 	})
+}
+
+function getWoordenlijstForCourseTest(testLengte) {
+	return new Promise(function(resolve,reject){
+		var xhr = new XMLHttpRequest();
+	
+		xhr.onreadystatechange = function() {
+			if(this.readyState==4){
+				var woordenArray = JSON.parse(this.responseText);
+				resolve(woordenArray);
+			}
+		}
+		var url = "http://localhost:8082/testCourse" + testLengte + "in" + sessionStorage.getItem("selectedCourse");
+		xhr.open("GET", url , "true");
+		xhr.send();
+		})
+}
+
+function getWoordenlijstForTaalTest(testLengte) {
+	return new Promise(function(resolve,reject){
+		var xhr = new XMLHttpRequest();
+	
+		xhr.onreadystatechange = function() {
+			if(this.readyState==4){
+				var woordenArray = JSON.parse(this.responseText);
+				resolve(woordenArray);
+			}
+		}
+		var url = "http://localhost:8082/testTaal" + testLengte + "in" + sessionStorage.getItem("selectedTaal");
+		xhr.open("GET", url , "true");
+		xhr.send();
+		})
 }
 
 async function getWoordenlijstMakeUp() {
@@ -121,19 +152,26 @@ function updateWoord() {
 
 //GET
 function getLessonList() {
-    var xhr = new XMLHttpRequest;
-    xhr.onreadystatechange = function() {
-        if (this.readyState==4) {
-			document.getElementById("lessenLijst").innerHTML = "";
-            var lessonArray = JSON.parse(this.responseText);
-            for (var a = 0; a<lessonArray.length; a++) {
-				placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+	return new Promise(function(resolve,reject){
+		var xhr = new XMLHttpRequest;
+		xhr.onreadystatechange = function() {
+			if (this.readyState==4) {
+				var lessonArray = JSON.parse(this.responseText);
+				resolve(lessonArray);
 			}
-        }
-    }
-	var url = "http://localhost:8082/courseLessenLijst" + sessionStorage.getItem("selectedCourse");
-    xhr.open("GET", url, "true")
-    xhr.send();
+		}
+		var url = "http://localhost:8082/courseLessenLijst" + sessionStorage.getItem("selectedCourse");
+		xhr.open("GET", url, "true")
+		xhr.send();
+	})
+}
+
+async function lessonListMakeUp() {
+	var lessonArray = await getLessonList();
+	document.getElementById("lessenLijst").innerHTML = "";
+	for (var a = 0; a<lessonArray.length; a++) {
+		placeLessonSelectButton(lessonArray[a].id, lessonArray[a].naam);
+	}
 }
 
 function getSpecificLes() {
@@ -165,7 +203,7 @@ function addLesson() {
     xhr.open("POST", url, "true");
     xhr.setRequestHeader("Content-type", "application/json");
 	xhr.send(loJSON);
-	getLessonList();
+	lessonListMakeUp();
 }
 
 //DELETE     
@@ -405,4 +443,15 @@ function placePopUpButton(deleteFunction) {
 	    closeWindow();
     }
     deletePopUpContent.appendChild(lessonButton);
+}
+
+/*
+	Testing and Lesson Functionality
+*/
+
+async function leerLijst() {
+	document.getElementById("SelectedWords").innerHTML = "";
+	for(var a=0;a<woordenArray.length & a<10;a++) {
+		document.getElementById("SelectedWords").innerHTML += woordenArray[a].primaryLanguage + "&nbsp;".repeat(16) + woordenArray[a].targetLanguage + "<br>";
+	}
 }

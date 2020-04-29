@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <link href="TaalApp.css" rel="stylesheet" type="text/css">
+        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+        
+    </head>
+    <body>
+        <input type="button" value="Back" onclick="goToCoursePage()">
+        <hr>
+        <div id="SelectedWords">
+
+        </div>
+        <hr>
+        <input type="button" value="update" onclick="getTestingList()">
+    </body>
+
+    <script>
+        sessionStorage.setItem("testLocation", 0); //nu nog elke keer als reset reset de test
+        (async () => {  
+            window.woordenArray = await getWoordenlijstForCourseTest(5);
+            leerLijst();
+            //leerLijstOefenen(sessionStorage.getItem("testLocation"));
+        })();//save once when window opens, never load again
+
+
+        function getTestingList() {
+            //When vertalingen get scores you could do this with SQL part in spring. Find woord by score low to high and remove above x length
+
+            
+
+        }
+
+        function goToCoursePage() { //using this to back will go back to 1 page, even though testing page currently allows 2 places to enter.
+            window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent");
+        }
+    </script>
+
+</html>

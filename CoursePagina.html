@@ -22,6 +22,7 @@
 
         </div>
         <input class="button" type="button" value="Delete Taal" onclick="openWindow(deleteTaal)">
+        <input class="button" type="button" value="Test knowledge" onclick="goToTestPage()">
 
         <div id="deletePopUp" class="modal" onclick="closeWindow()">
 			<!-- Modal content -->
@@ -69,6 +70,10 @@
     
         function goToTaalPage() {
             window.open("file:///D:/Spring%20WT/TaalAppProject/TaalPagina.html", "_parent")
+        }
+        
+        function goToTestPage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/Testing.html", "_parent")
         }
     </script>
 </html>

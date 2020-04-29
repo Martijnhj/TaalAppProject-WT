@@ -3,6 +3,7 @@ package com.martijn.taalapp.rest;
 import com.martijn.taalapp.controller.TaalService;
 import com.martijn.taalapp.domein.Course;
 import com.martijn.taalapp.domein.Taal;
+import com.martijn.taalapp.domein.Vertaling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,16 @@ public class TaalEndpoint {
     @GetMapping("/specificTaalVars{id}")
     public Taal getSpecificTaal(@PathVariable String id) {
         return ts.getSpecificTaal(Long.parseLong(id));
+    }
+
+    @GetMapping("/testTaal{numberWords}in{idTaal}")
+    public Iterable<Vertaling> getTestingSetTaal(@PathVariable String numberWords, @PathVariable String idTaal) {
+        return ts.getTestingSetTaal(Integer.parseInt(numberWords), Long.parseLong(idTaal));
+    }
+
+    @GetMapping("/testCourse{numberWords}in{idCourse}")
+    public Iterable<Vertaling> getTestingSetCourse(@PathVariable String numberWords, @PathVariable String idCourse) {
+        return ts.getTestingSetCourse(Integer.parseInt(numberWords), Long.parseLong(idCourse));
     }
 
     @PostMapping("/taalMaken")

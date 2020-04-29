@@ -1,7 +1,9 @@
 package com.martijn.taalapp.controller;
 
 import com.martijn.taalapp.domein.Course;
+import com.martijn.taalapp.domein.Les;
 import com.martijn.taalapp.domein.Taal;
+import com.martijn.taalapp.domein.Vertaling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,44 @@ public class TaalService {
 
         }
         return tr.findById(id).get();
+    }
+
+    public Iterable<Vertaling> getTestingSetTaal(int numberWords, long idTaal) {
+        ArrayList<Vertaling> testSet = new ArrayList<>();
+        Taal testTaal = tr.findById(idTaal).get();
+        for(Course course: testTaal.getCourses()) {
+            for(Les les: course.getLessen()) {
+                for (Vertaling vertaling: les.getVertaling()) {
+                    testSet.add(vertaling);
+                }
+            }
+        }
+
+        for (;testSet.size()>numberWords;) {
+            int rand = (int)(Math.random()*testSet.size());
+            testSet.remove(rand);
+        }
+
+        return testSet;
+
+    }
+
+    public Iterable<Vertaling> getTestingSetCourse(int numberWords, long idCourse) {
+        ArrayList<Vertaling> testSet = new ArrayList<>();
+        Course testCourse = cr.findById(idCourse).get();
+            for(Les les: testCourse.getLessen()) {
+                for (Vertaling vertaling: les.getVertaling()) {
+                    testSet.add(vertaling);
+                }
+            }
+
+        for (;testSet.size()>numberWords;) {
+            int rand = (int)(Math.random()*testSet.size());
+            System.out.println(rand);
+            testSet.remove(rand);
+        }
+
+        return testSet;
     }
 
     public void newTaal(Taal taal) {

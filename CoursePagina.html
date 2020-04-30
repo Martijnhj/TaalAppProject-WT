@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <link href="TaalApp.css" rel="stylesheet" type="text/css">		
+        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+
+    </head>
+    <body>
+        <input class="button" type="button" value="Back" onclick="goToTaalPage()">
+
+        <div style="cursor:text">
+            <h1 id="taalName" ondblclick="localChangeTaalNameProgress()"></h1>
+        </div>
+
+        <div id="addCourseBlock">
+            <input id="newCourseName" type="text" placeholder="Add Course Block">
+            <input id="addNewCourseName" type="button" value="Add Course" onclick="addCourse()">
+        </div>
+
+        <hr>
+
+        <div id=courseListBlock>
+
+        </div>
+        <input class="button" type="button" value="Delete Taal" onclick="openWindow(deleteTaal)">
+        <input class="button" type="button" value="Test knowledge" onclick="goToTestPage()">
+
+        <div id="deletePopUp" class="modal" onclick="closeWindow()">
+			<!-- Modal content -->
+			<div id="deletePopUpContent" class="modal-content">
+			  <!--<span class="close" onclick="closeWindow()">&times;</span>-->
+			  <p>Some text in the Modal..</p>
+			  <input type="button" value="cancel" onclick="closeWindow()">
+			</div>
+        </div>
+
+    </body>
+    <script>
+        getCourseList();
+
+        assignTaalName();
+	
+		async function assignTaalName() {
+			await getSpecificTaal();
+            document.getElementById("taalName").innerHTML = sessionStorage.getItem("taalName");
+            //sessionStorage.removeItem("courseName");
+            //moet hier links komen naar de pagina waar naar verwezen wordt 
+        }
+        
+        async function localChangeTaalNameProgress() {
+			taalName.removeChild(taalName.lastChild);
+			await getSpecificCourse();
+			var changeNameInput = document.createElement("input");
+			changeNameInput.type = "text";
+            changeNameInput.value = sessionStorage.getItem("taalName");
+            //sessionStorage.removeItem("courseName");
+			changeNameInput.onkeyup = function() {
+				localChangeTaalName(event, changeNameInput)
+			}
+			taalName.appendChild(changeNameInput);
+		}
+
+		function localChangeTaalName(e, inputText) {
+			console.log(e.keyCode);
+			if(e.keyCode==13) {
+				console.log(inputText.value)
+				changeTaalName(inputText.value);//currently hot awaiting this, so might become problem if writing is slow
+				assignTaalName();
+			}
+        }
+    
+        function goToTaalPage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/TaalPagina.html", "_parent")
+        }
+        
+        function goToTestPage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/Testing.html", "_parent")
+        }
+    </script>
+</html>

@@ -1,0 +1,121 @@
+<!--When deleting lesson: a pop up window should follow asking if you are sure. 
+    Because this will also delete any words contained within the lesson-->
+
+<!--When deleting a word a pop up window should follow asking if you're sure-->
+
+
+<html>
+	<head>
+		<!--title is in the tab-->
+		<!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+		<link href="TaalApp.css" rel="stylesheet" type="text/css">		
+		<script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+		
+		
+		
+	</head>
+	
+	<body>
+
+		<input value="Back" type="button" onclick="goToLessonPage()"> 
+
+		<div style="cursor:text">
+			<h1 id="lessonName" ondblclick=localChangeLessonNameProgress()></h1>
+		</div>
+        
+		
+		<input type="text" placeholder="woord" id="woord1">
+		<input type="text" placeholder="vertaling" id="woordVertaling">
+		<input class = "button" type="button" class="bodyButton" value="submit" onclick="addWoord()">
+		
+		<hr>
+
+		<div id="lijstObject">
+			<table>
+				<tr>
+					<th class="contentColumn">Woord</th>
+					<th class="contentColumn">Vertaling</th>
+					<th class="buttonColumn">Delete</th>
+					<th class="buttonColumn">Change</th>
+				</tr>
+
+			</table>
+			<div id="woordenLijst">
+			</div>
+		</div>
+		
+
+		<div id="changeOpties">
+			<input type="text" id="woordVerandering">
+			<input type="text" id="vertalingVerandering">
+			<input type="button" class= "bodyButton" value="Save Change" onclick="updateWoord()">
+		</div>
+    
+		<input class="button" type="button" value="Delete Lesson" onclick="openWindow(deleteLes)">
+
+		<div id="changeLessonName">
+			<input class="button" type="button" value="Change Lesson Name" onclick="localChangeLessonNameProgress()">
+		</div>
+
+		<input type="button" class="button" value="Practice Lesson" onclick="goToLessonPracticeSession()">
+		
+		<div id="deletePopUp" class="modal" onclick="closeWindow()">
+
+			<!-- Modal content -->
+			<div id="deletePopUpContent" class="modal-content">
+			  <!--<span class="close" onclick="closeWindow()">&times;</span>-->
+			  <p>Some text in the Modal..</p>
+			  <input type="button" value="cancel" onclick="closeWindow()">
+			</div>
+		  
+		  </div>
+
+
+		  
+	</body>
+
+	<script> //specific script methods to this page. Below to allow for loading as page loads
+		getWoordenlijstMakeUp();
+		assignLessonName();
+		document.getElementById("changeOpties").style.display = "none";
+
+		async function assignLessonName() {
+			await getSpecificLes();
+			document.getElementById("lessonName").innerHTML = sessionStorage.getItem("taalName") + ">" + sessionStorage.getItem("courseName") + ">" + sessionStorage.getItem("lessonName");
+			//sessionStorage.removeItem("lessonName"); 
+		}
+
+		async function localChangeLessonNameProgress() {
+			lessonName.removeChild(lessonName.lastChild);
+			await getSpecificLes();
+			var changeNameInput = document.createElement("input");
+			changeNameInput.type = "text";
+			changeNameInput.value = sessionStorage.getItem("lessonName");
+			//sessionStorage.removeItem("lessonName"); 
+			changeNameInput.onkeyup = function() {
+				localChangeLessonName(event, changeNameInput)
+			}
+			lessonName.appendChild(changeNameInput);
+		}
+
+		function localChangeLessonName(e, inputText) {
+			console.log(e.keyCode);
+			if(e.keyCode==13) {
+				console.log(inputText.value)
+				changeLessonName(inputText.value);//currently hot awaiting this, so might become problem if writing is slow
+				assignLessonName();
+			}
+		}
+
+		function goToLessonPage() {
+			window.open("file:///D:/Spring%20WT/TaalAppProject/LesPagina.html", "_parent")
+		}
+
+		function goToLessonPracticeSession() {
+			window.open("file:///D:/Spring%20WT/TaalAppProject/LessonLearning.html", "_parent")
+		}
+
+	</script>
+
+	
+</html>

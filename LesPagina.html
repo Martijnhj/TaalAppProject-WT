@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <link href="TaalApp.css" rel="stylesheet" type="text/css">	
+        <script src="TaalApp.js" rel="scriptsheet" type="text/javascript"></script>
+      
+
+    </head>
+    <body>
+        <!--Need a back button here still-->
+        <input value="Back" type="button" onclick="goToCoursePage()">
+
+        <div style="cursor:text">
+            <h1 id="courseName" ondblclick="localChangeCourseNameProgress()"></h1>
+        </div>
+        <input type="text" placeholder="Lesson Toevoegen" id="lessonToevoegen">
+        <input type="button" value="Toevoegen" onclick="addLesson()"> 
+
+        <hr>
+
+        <hr>
+        <div id="lessenLijst"></div>
+        <hr>
+        <input type="button" value="Delete Course" onclick="openWindow(deleteCourse)" class="button">
+        <input class="button" type="button" value="Test knowledge" onclick="goToTestPage()">
+
+        <div id="deletePopUp" class="modal" onclick="closeWindow()">
+			<!-- Modal content -->
+			<div id="deletePopUpContent" class="modal-content">
+			  <!--<span class="close" onclick="closeWindow()">&times;</span>-->
+			  <p>Some text in the Modal..</p>
+			  <input type="button" value="cancel" onclick="closeWindow()">
+			</div>
+        </div>
+        
+
+    </body>
+    <script> 
+        lessonListMakeUp() 
+        //hier gaat call komen voor verandering van shit. Moet meer generiek gemaakt worden vanuit testinglocalstorage.html!!!!
+
+		assignCourseName();
+	
+		async function assignCourseName() {
+			await getSpecificCourse();
+            document.getElementById("courseName").innerHTML = sessionStorage.getItem("taalName") + ">" + sessionStorage.getItem("courseName");
+            //sessionStorage.removeItem("courseName");
+            //moet hier links komen naar de pagina waar naar verwezen wordt 
+		}
+
+		async function localChangeCourseNameProgress() {
+			courseName.removeChild(courseName.lastChild);
+			await getSpecificCourse();
+			var changeNameInput = document.createElement("input");
+			changeNameInput.type = "text";
+            changeNameInput.value = sessionStorage.getItem("courseName");
+            //sessionStorage.removeItem("courseName");
+			changeNameInput.onkeyup = function() {
+				localChangeCourseName(event, changeNameInput)
+			}
+			courseName.appendChild(changeNameInput);
+		}
+
+		function localChangeCourseName(e, inputText) {
+			console.log(e.keyCode);
+			if(e.keyCode==13) {
+				console.log(inputText.value)
+				changeCourseName(inputText.value);//currently hot awaiting this, so might become problem if writing is slow
+				assignCourseName();
+			}
+        }
+        
+        function goToCoursePage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/CoursePagina.html", "_parent")
+        }
+
+        function goToTestPage() {
+            window.open("file:///D:/Spring%20WT/TaalAppProject/Testing.html", "_parent")
+        }
+    
+    
+    </script>
+    
+
+</html>
